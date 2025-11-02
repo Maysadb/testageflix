@@ -30,56 +30,57 @@
 <div style="text-align:center; margin-top:50px;">
   <h1>Welcome to Ageflix</h1>
   <p>Detect your age and see movies suitable for you!</p>
-  <video id="webcam" autoplay playsinline width="300"></video>
+
+  <!-- Webcam Video -->
+  <video id="webcam" autoplay playsinline width="300" style="border-radius:10px;"></video>
   <canvas id="canvas" width="300" height="225" style="display:none;"></canvas>
   <p id="prediction" style="margin-top:20px; font-size:18px;"></p>
 </div>
 
-<!-- Movie Slider -->
-<div class="slider">
-  <div class="movie-card"><img src="movie1.jpg" alt="Movie 1"><h3>Movie 1</h3></div>
-  <div class="movie-card"><img src="movie2.jpg" alt="Movie 2"><h3>Movie 2</h3></div>
-  <div class="movie-card"><img src="movie3.jpg" alt="Movie 3"><h3>Movie 3</h3></div>
-  <!-- أضف بقية 30 فيلم -->
-</div>
-
 <script>
 const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
+
 let model, webcam, maxPredictions;
 
 async function init() {
-    const modelURL = URL + "model.json";
-    const metadataURL = URL + "metadata.json";
-    model = await tmImage.load(modelURL, metadataURL);
-    maxPredictions = model.getTotalClasses();
-    webcam = new tmImage.Webcam(300,225,true);
-    await webcam.setup();
-    await webcam.play();
-    document.getElementById("webcam").replaceWith(webcam.canvas);
-    window.requestAnimationFrame(loop);
+  const modelURL = URL + "model.json";
+  const metadataURL = URL + "metadata.json";
+  model = await tmImage.load(modelURL, metadataURL);
+  maxPredictions = model.getTotalClasses();
+
+  webcam = new tmImage.Webcam(300, 225, true);
+  await webcam.setup({ facingMode: "user" });
+  await webcam.play();
+
+  document.getElementById("webcam").replaceWith(webcam.canvas);
+  window.requestAnimationFrame(loop);
 }
 
 async function loop() {
-    webcam.update();
-    await predict();
-    window.requestAnimationFrame(loop);
+  webcam.update();
+  await predict();
+  window.requestAnimationFrame(loop);
 }
 
 async function predict() {
-    const prediction = await model.predict(webcam.canvas);
-    let highest = prediction[0];
-    for(let i=1;i<prediction.length;i++){
-      if(prediction[i].probability>highest.probability) highest = prediction[i];
-    }
-    document.getElementById("prediction").innerText = `Detected Age Group: ${highest.className}`;
-    if(highest.probability>0.85){
-      if(highest.className.toLowerCase().includes("kids")) window.location.href="kids.html";
-      else if(highest.className.toLowerCase().includes("adult")) window.location.href="adult.html";
-      else if(highest.className.toLowerCase().includes("senior")) window.location.href="senior.html";
-    }
+  const prediction = await model.predict(webcam.canvas);
+  let highest = prediction[0];
+  for (let i = 1; i < prediction.length; i++) {
+    if (prediction[i].probability > highest.probability) highest = prediction[i];
+  }
+
+  document.getElementById("prediction").innerText = `Detected Age Group: ${highest.className}`;
+
+  if (highest.probability > 0.85) {
+    const ageGroup = highest.className.toLowerCase();
+    if (ageGroup.includes("kids")) window.location.href = "kids.html";
+    else if (ageGroup.includes("adult")) window.location.href = "adult.html";
+    else if (ageGroup.includes("senior")) window.location.href = "senior.html";
+  }
 }
 
 init();
 </script>
+
 </body>
 </html>
