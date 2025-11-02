@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <nav class="navbar">
   <div class="logo-text">Ageflix</div>
   <ul class="menu">
@@ -22,12 +23,16 @@
   </ul>
 </nav>
 
-<div class="movie-details">
+<div style="max-width:900px; margin:30px auto;">
   <h1>Movie Title</h1>
-  <img src="movie1.jpg" alt="Movie Poster">
-  <p><strong>Overview:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-  <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Movie Trailer"></iframe>
-  <p><strong>Cast:</strong> Actor 1, Actor 2, Actor 3</p>
+  <img src="movie1.jpg" alt="Movie Poster" style="width:100%; border-radius:10px;">
+  <h2>Summary</h2>
+  <p>This is a summary of the movie. Lorem ipsum dolor sit amet...</p>
+  <h2>Trailer</h2>
+  <video src="trailer1.mp4" controls width="100%"></video>
+  <h2>Cast</h2>
+  <p>Actor 1, Actor 2, Actor 3</p>
 </div>
+
 </body>
 </html>
