@@ -10,7 +10,6 @@
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar">
   <div class="logo-text">Ageflix</div>
   <ul class="menu">
@@ -26,19 +25,17 @@
   </ul>
 </nav>
 
-<!-- Hero with Teachable Machine -->
 <div style="text-align:center; margin-top:50px;">
   <h1>Welcome to Ageflix</h1>
   <p>Detect your age and see movies suitable for you!</p>
 
-  <!-- Webcam Video -->
   <video id="webcam" autoplay playsinline width="300" style="border-radius:10px;"></video>
   <canvas id="canvas" width="300" height="225" style="display:none;"></canvas>
   <p id="prediction" style="margin-top:20px; font-size:18px;"></p>
 </div>
 
 <script>
-const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
+const URL = "https://teachablemachine.withgoogleusercontent.com/models/UujRQ_OS4/";
 
 let model, webcam, maxPredictions;
 
