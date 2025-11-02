@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ageflix - Home</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo-text">Ageflix</div>
+  <ul class="menu">
+    <li><a href="about.html">About</a></li>
+    <li class="dropdown"><a href="#">Movies ▾</a>
+      <ul class="dropdown-menu">
+        <li><a href="kids.html">Kids</a></li>
+        <li><a href="adult.html">Adult</a></li>
+        <li><a href="senior.html">Senior</a></li>
+      </ul>
+    </li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Hero with Teachable Machine -->
+<div style="text-align:center; margin-top:50px;">
+  <h1>Welcome to Ageflix</h1>
+  <p>Detect your age and see movies suitable for you!</p>
+  <video id="webcam" autoplay playsinline width="300"></video>
+  <canvas id="canvas" width="300" height="225" style="display:none;"></canvas>
+  <p id="prediction" style="margin-top:20px; font-size:18px;"></p>
+</div>
+
+<!-- Movie Slider -->
+<div class="slider">
+  <div class="movie-card"><img src="movie1.jpg" alt="Movie 1"><h3>Movie 1</h3></div>
+  <div class="movie-card"><img src="movie2.jpg" alt="Movie 2"><h3>Movie 2</h3></div>
+  <div class="movie-card"><img src="movie3.jpg" alt="Movie 3"><h3>Movie 3</h3></div>
+  <!-- أضف بقية 30 فيلم -->
+</div>
+
+<script>
+const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
+let model, webcam, maxPredictions;
+
+async function init() {
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
+    model = await tmImage.load(modelURL, metadataURL);
+    maxPredictions = model.getTotalClasses();
+    webcam = new tmImage.Webcam(300,225,true);
+    await webcam.setup();
+    await webcam.play();
+    document.getElementById("webcam").replaceWith(webcam.canvas);
+    window.requestAnimationFrame(loop);
+}
+
+async function loop() {
+    webcam.update();
+    await predict();
+    window.requestAnimationFrame(loop);
+}
+
+async function predict() {
+    const prediction = await model.predict(webcam.canvas);
+    let highest = prediction[0];
+    for(let i=1;i<prediction.length;i++){
+      if(prediction[i].probability>highest.probability) highest = prediction[i];
+    }
+    document.getElementById("prediction").innerText = `Detected Age Group: ${highest.className}`;
+    if(highest.probability>0.85){
+      if(highest.className.toLowerCase().includes("kids")) window.location.href="kids.html";
+      else if(highest.className.toLowerCase().includes("adult")) window.location.href="adult.html";
+      else if(highest.className.toLowerCase().includes("senior")) window.location.href="senior.html";
+    }
+}
+
+init();
+</script>
+</body>
+</html>
